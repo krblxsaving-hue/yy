@@ -110,6 +110,23 @@ async def ping(ctx):
 async def info(ctx):
     await ctx.send(f"Server: {ctx.guild.name}\nMembers: {ctx.guild.member_count}")
 
+from flask import Flask
+from threading import Thread
 import os
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "YY Bot is online!"
+
+def run():
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+keep_alive()
 
 bot.run(os.getenv("DISCORD_TOKEN"))
