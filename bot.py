@@ -374,11 +374,34 @@ async def ping(ctx):
 
 @bot.command()
 async def info(ctx):
+
     await ctx.send(
         f"Server: {ctx.guild.name}\n"
         f"Members: {ctx.guild.member_count}"
     )
 
+
+@bot.event
+async def on_ready():
+    print(f"Bot online: {bot.user}")
+
+@bot.command()
+@commands.has_permissions(manage_channels=True)
+async def lock(ctx):
+    await ctx.channel.set_permissions(
+        ctx.guild.default_role,
+        send_messages=False
+    )
+    await ctx.send("Channel locked!")
+
+@bot.command()
+@commands.has_permissions(manage_channels=True)
+async def unlock(ctx):
+    await ctx.channel.set_permissions(
+        ctx.guild.default_role,
+        send_messages=None
+    )
+    await ctx.send("Channel unlocked!")
 
 # ---------- ERROR HANDLING ----------
 
@@ -423,7 +446,6 @@ def run():
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 8080))
     )
-
 
 def keep_alive():
     thread = Thread(
